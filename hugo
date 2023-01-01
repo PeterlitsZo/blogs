@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+IMAGE="klakegg/hugo:ext-debian"
+SERVER_ARG="-t terminal -b https://blogs.peterlits.com/ --appendPort=false"
+
+if [[ "$1" == "shell" ]]; then
+	docker run --rm -it -v $(pwd):/src -p 1313:1313 $IMAGE shell
+elif [[ "$1" == "exec" ]]; then
+    shift
+	docker run --rm -it -v $(pwd):/src $IMAGE "$@"
+elif [[ "$1" == "serverd" ]]; then
+	docker run --rm -d -v $(pwd):/src -p 8001:1313 --name hugo $IMAGE server $SERVER_ARG
+elif [[ "$1" == "server" ]]; then
+	docker run --rm -v $(pwd):/src -p 8001:1313 --name hugo $IMAGE server $SERVER_ARG
+fi
